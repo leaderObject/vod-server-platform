@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.atfangyi.tingshu.album.mapper.TrackInfoMapper">
+
+    <resultMap id="TrackListVoMap" type="com.atfangyi.tingshu.vo.album.AlbumTrackListVo" autoMapping="true"/>
+
+    <select id="selectPageByAlbumId" resultMap="TrackListVoMap">
+        select track_info.id                                                  trackId
+             , track_info.track_title                                         trackTitle
+             , track_info.media_size                                          mediaDuration
+             , track_info.create_time                                         createTime
+             , track_info.order_num
+             , max(if(track_stat.stat_type = '0701', track_stat.stat_num, 0)) playStatNum
+             , max(if(track_stat.stat_type = '0704', track_stat.stat_num, 0)) albumCommentStatNum
+
+        from album_info
+                 join track_info on album_info.id = track_info.album_id
+                 join track_stat on track_info.id = track_stat.track_id
+        where album_info.id = #{id}
+        group by track_id
+        order by order_num
+    </select>
+
+    <update id="receiver">
+        update track_stat
+        set stat_num= stat_num + #{trackStatMqVo.count}
+        where track_id = #{trackStatMqVo.trackId}
+          and stat_type = #{trackStatMqVo.statType}
+          and is_deleted = 0
+
+    </update>
+
+    <select id="selectPageByCondition" resultType="com.atfangyi.tingshu.vo.album.AlbumTrackListVo">
+        select track_info.id                            trackId,
+               track_title                              trackTitle,
+               cover_url                                coverUrl,
+               media_duration                           mediaDuration,
+               sum(if(stat_type = '0701', stat_num, 0)) playStatNum,
+               sum(if(stat_type = '0704', stat_num, 0)) albumCommentStatNum,
+               track_info.create_time                   createTime,
+               track_info.is_open                       isShowPaidMark
+        from track_info
+                 join
+             track_stat
+             on track_info.id = track_stat.track_id
+        where track_info.album_id = #{id} and  track_info.is_deleted=0
+        group by track_info.id
+    </select>
+</mapper>

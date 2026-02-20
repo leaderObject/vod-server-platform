@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.atfangyi.tingshu.user.mapper.LogInfoMapper">
+    <resultMap id="LogsMap" type="com.atfangyi.tingshu.model.user.LogInfo" autoMapping="true"/>
+
+    <select id="queryLogs" resultMap="LogsMap" parameterType="com.atfangyi.tingshu.model.user.LogInfo">
+        select *
+        from log_info
+        <where>
+            <if test="logDto.operatorType!=null and logDto.operatorType!=''">
+                and operator_type=#{logDto.operatorType}
+            </if>
+
+            <if test="logDto.operatorName!=null and logDto.operatorName!=''">
+                and operator_name=#{logDto.operatorName}
+            </if>
+
+            <if test="logDto.beginTime!=null and logDto.beginTime!=''">
+                and operate_time>=#{logDto.beginTime}
+            </if>
+
+            <if test="logDto.endTime!=null and logDto.endTime!=''">
+                and operate_time <![CDATA[<=]]> #{logDto.endTime}
+            </if>
+        </where>
+    </select>
+
+</mapper>
+

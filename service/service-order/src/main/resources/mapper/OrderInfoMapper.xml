@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.atfangyi.tingshu.order.mapper.OrderInfoMapper">
+    <select id="queryOrderInfo" resultType="com.atfangyi.tingshu.vo.order.OrderInfoManagerVo">
+        select orInfo.id id, sum(order_amount) orderAmount,
+        orInfo.order_no orderNo,
+        orInfo.order_status orderStatus,
+        orInfo.pay_way payWay
+        from order_info orInfo
+        join order_detail orDe
+        on orInfo.id=orDe.order_id
+        <where>
+            <trim suffixOverrides="and">
+                <if test="orderDto.orderNo!=null and orderDto.orderNo!=''">
+                    orInfo.order_no = #{orderDto.orderNo} and
+                </if>
+                <if test="orderDto.userId!=null and orderDto.userId!=''">
+                    orInfo.user_id = #{orderDto.userId} and
+                </if>
+                <if test="orderDto.orderStatus!=null and orderDto.orderStatus!=''">
+                    orInfo.order_status = #{orderDto.orderStatus} and
+                </if>
+                <if test="orderDto.payWay!=null and orderDto.payWay!=''">
+                    orInfo.pay_way = #{orderDto.payWay} and
+                </if>
+            </trim>
+        </where>
+        group by  order_no
+        order by orInfo.create_time desc
+    </select>
+</mapper>
+

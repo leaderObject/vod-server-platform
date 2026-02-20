@@ -1,0 +1,6 @@
+wx:
+  manager:
+    open:
+      appId: wxed9954c01bb89b47
+      appSecret: a7482517235173ddb4083788de60b90e
+      redirectUrl: http://localhost:8500/admin/user/wechat/redirect

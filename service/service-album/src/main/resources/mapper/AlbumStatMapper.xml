@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.atfangyi.tingshu.album.mapper.AlbumStatMapper">
+    <insert id="InitAlbumStatNum">
+        insert into album_stat(album_id,stat_type,stat_num)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{id},#{item},0)
+        </foreach>
+    </insert>
+    <select id="queryAlbumStatNumber" resultType="integer">
+        select stat_num
+        from album_stat
+        where album_id = #{param1}
+          and stat_type = #{param2}
+    </select>
+
+</mapper>
+

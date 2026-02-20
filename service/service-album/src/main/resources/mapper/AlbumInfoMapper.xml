@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+
+<mapper namespace="com.atfangyi.tingshu.album.mapper.AlbumInfoMapper">
+
+    <resultMap id="AlbumStatVoMap" type="com.atfangyi.tingshu.vo.album.AlbumStatVo" autoMapping="true">
+
+    </resultMap>
+    <select id="getAlbumStatVo"  resultMap="AlbumStatVoMap">
+        SELECT album_info.id   albumId,
+               MAX(IF(stat_type = '0401', stat_num, 0)) AS playStatNum,
+               MAX(IF(stat_type = '0402', stat_num, 0)) AS subscribeStatNum,
+               MAX(IF(stat_type = '0403', stat_num, 0)) AS buyStatNum,
+               MAX(IF(stat_type = '0404', stat_num, 0)) AS commentStatNum
+        FROM album_info
+                 JOIN album_stat ON album_info.id = album_stat.album_id
+        WHERE album_info.id = #{id};
+    </select>
+
+    <update id="updateAlbumStat">
+        update album_stat
+        set stat_num = stat_num + #{trackStatMqVo.count}
+        where album_id = #{trackStatMqVo.albumId}
+          and id = #{trackStatMqVo.trackId}
+          and stat_type = '0401'
+          and is_deleted = 0
+    </update>
+
+    <select id="getTrackStatVo" resultMap="AlbumStatVoMap">
+        select
+            max(if(stat_type='0701',stat_num,0))  playStatNum ,
+            max(if(stat_type='0702',stat_num,0))  subscribeStatNum ,
+            max(if(stat_type='0703',stat_num,0))   buyStatNum,
+            max(if(stat_type='0704',stat_num,0))  commentStatNum
+        from track_stat
+        where track_id = #{trackId};
+    </select>
+
+</mapper>
+

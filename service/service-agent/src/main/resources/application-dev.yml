@@ -1,0 +1,13 @@
+spring:
+  ai:
+    dashscope:
+      api-key: sk-192fce70d09b4f94bb5373c9c5287fe7
+      chat:
+        options:
+          model: qwen3-max
+server:
+  port: 5566
+
+logging:
+  level:
+    com.atfangyi.agent.advisor.AgentLoggerAdvisor: debug
