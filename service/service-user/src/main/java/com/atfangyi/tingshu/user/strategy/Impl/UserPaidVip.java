@@ -33,20 +33,33 @@ public class UserPaidVip implements UserPaidStrategy {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveUserPaid(UserPaidRecordVo userPaidRecordVo) {
-        UserInfo userInfo = userInfoMapper.selectById(userPaidRecordVo.getUserId());
+        Long userId = userPaidRecordVo.getUserId();
+        UserInfo userInfo = userInfoMapper.selectById(userId);
         Assert.notNull(userInfo, "数据出现异常userInfo");
-        //获取用户开通会员的期数
+
         Long month = 0L;
         if (CollectionUtil.isNotEmpty(userPaidRecordVo.getItemIdList()))
             month = userPaidRecordVo.getItemIdList().get(0);
+
+        DateTime now = DateTime.now();
+        // 已是会员且未过期：在原到期时间基础上累加
+        // 非会员或已过期：从当前时间开始计算
+        boolean isVipActive = userInfo.getIsVip() != null && userInfo.getIsVip() == 1
+                && userInfo.getVipExpireTime() != null && userInfo.getVipExpireTime().after(now.toDate());
+        DateTime baseTime = isVipActive ? new DateTime(userInfo.getVipExpireTime()) : now;
+        DateTime expireTime = baseTime.plusMonths(Math.toIntExact(month));
+        DateTime startTime = isVipActive ? new DateTime(userInfo.getVipExpireTime()) : now;
+
         UserVipService userVipService = new UserVipService();
-        userVipService.setUserId(userPaidRecordVo.getUserId());
+        userVipService.setUserId(userId);
         userVipService.setOrderNo(userPaidRecordVo.getOrderNo());
-        userVipService.setStartTime(DateTime.now().toDate());
-        userVipService.setExpireTime(DateTime.now().plus(Math.toIntExact(month)).toDate());
+        userVipService.setStartTime(startTime.toDate());
+        userVipService.setExpireTime(expireTime.toDate());
 
         if (userVipServiceMapper.insert(userVipService) < 1) throw new GuiguException(ResultCodeEnum.FAIL);
 
-
+        userInfo.setIsVip(1);
+        userInfo.setVipExpireTime(expireTime.toDate());
+        userInfoMapper.updateById(userInfo);
     }
 }

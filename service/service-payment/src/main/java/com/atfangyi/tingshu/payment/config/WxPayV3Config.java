@@ -22,7 +22,7 @@ public class WxPayV3Config {
     public String apiV3key;
     /** 回调地址 */
     private String notifyUrl;
-//    ‪D:\tem\apiclient_key.pem
+
 
     @Bean
     public RSAAutoCertificateConfig rsaAutoCertificateConfig(){

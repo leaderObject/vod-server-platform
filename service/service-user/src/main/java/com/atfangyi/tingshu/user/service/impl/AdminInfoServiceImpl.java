@@ -78,7 +78,9 @@ public class AdminInfoServiceImpl extends ServiceImpl<AdminInfoMapper, AdminInfo
 
     }
 
-
+    public static void main(String[] args) {
+        System.out.println(MD5.encrypt("fangyi"));
+    }
     /**
      * 发送验证码业务
      *
@@ -130,6 +132,7 @@ public class AdminInfoServiceImpl extends ServiceImpl<AdminInfoMapper, AdminInfo
         redisTemplate.opsForValue().set(RedisConstant.ADMIN_INFO_PREFIX + adminInfo.getId(), adminInfo);
         return JwtUtil.createJWT(jsonObject.toString());
     }
+
 
 
     public void initAddress(Long id, HttpServletRequest serverHttpRequest) {

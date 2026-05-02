@@ -4,7 +4,7 @@ spring:
       api-key: sk-192fce70d09b4f94bb5373c9c5287fe7
       chat:
         options:
-          model: qwen3-max
+          model: qwen3.6-plus-2026-04-02
 server:
   port: 5566
 
