@@ -21,6 +21,9 @@ public class Comment {
 	@Schema(description = "专辑id")
 	private Long albumId;
 
+	@Schema(description = "声音id")
+	private Long trackId;
+
 	@Schema(description = "用户id")
 	private Long userId;
 
@@ -44,6 +47,9 @@ public class Comment {
 
 	@Schema(description = "创建时间")
 	private Date createTime;
+
+	@Schema(description = "删除标记，1表示已删除")
+	private String deleteMark;
 
 	@Schema(description = "当前用户是否点赞")
 	@Transient

@@ -17,10 +17,7 @@ import com.atfangyi.tingshu.model.search.AlbumInfoIndex;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -64,5 +61,13 @@ public class AminAlbumController {
     @AdminLogin
     public Result<List<AlbumInfoIndex>> importAlbum() {
         return Result.ok(albumInfoService.importAlbum());
+    }
+
+    @Operation(summary = "根据ID获取专辑信息")
+    @GetMapping("/getAlbumInfoById/{id}")
+    @AdminLogin
+    @OperatorLogAnnotation(operatorType = "4", operatorMethod = "getAlbumInfoById")
+    public Result<AlbumInfo> getAlbumInfoById(@PathVariable Long id) {
+        return Result.ok(albumInfoService.getById(id));
     }
 }

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir -p /c/root/tingshu)",
+      "Bash(cp \"D:/tmp/apiclient_key.pem\" /c/root/tingshu/)"
+    ]
+  }
+}

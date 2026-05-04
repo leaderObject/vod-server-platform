@@ -136,10 +136,26 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         Object object = redisTemplate.opsForValue().get(RedisConstant.USER_LOGIN_KEY_PREFIX + token);
         UserInfo userInfo = null;
 
-        if (object != null) userInfo = (UserInfo) object;
-        else userInfo = new UserInfo();
+        if (object != null) {
+            userInfo = (UserInfo) object;
+            // 检查用户是否为VIP会员
+            userInfo.setIsVip(checkUserVipStatus(userInfo.getId()) ? 1 : 0);
+        } else {
+            userInfo = new UserInfo();
+        }
 
         return userInfo;
+    }
+
+    /**
+     * 检查用户是否为VIP会员
+     */
+    private boolean checkUserVipStatus(Long userId) {
+        if (userId == null) return false;
+        LambdaQueryWrapper<UserVipService> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(UserVipService::getUserId, userId);
+        wrapper.gt(UserVipService::getExpireTime, new Date()); // 过期时间大于当前时间
+        return userVipServiceMapper.selectCount(wrapper) > 0;
     }
 
     @Override
@@ -377,5 +393,15 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         Query query = new Query(Criteria.where("userId").is(userId).and("trackId").is(trackId));
         UserCollect exist = mongoTemplate.findOne(query, UserCollect.class, collectionName);
         return exist != null;
+    }
+
+    @Override
+    public List<UserVipService> getVipServiceList(com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<UserVipService> wrapper) {
+        return userVipServiceMapper.selectList(wrapper);
+    }
+
+    @Override
+    public long getVipServiceCount(com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<UserVipService> wrapper) {
+        return userVipServiceMapper.selectCount(wrapper);
     }
 }

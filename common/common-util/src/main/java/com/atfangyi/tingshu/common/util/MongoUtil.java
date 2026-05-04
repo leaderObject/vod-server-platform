@@ -12,6 +12,7 @@ public class MongoUtil {
         USER_LISTEN_PROCESS(100,"userListenProcess"),
         COMMENT(100,"comment"),
         COMMENT_PRAISE(100,"commentPraise"),
+        USER_INFO(100,"userInfo"),
         ;
 
         private Integer partition;

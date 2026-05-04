@@ -51,4 +51,8 @@ public interface UserInfoService extends IService<UserInfo> {
 
     Boolean isCollect(Long trackId);
 
+    List<UserVipService> getVipServiceList(com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<UserVipService> wrapper);
+
+    long getVipServiceCount(com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<UserVipService> wrapper);
+
 }

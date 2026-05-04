@@ -38,6 +38,11 @@
             <artifactId>wx-java-miniapp-spring-boot-starter</artifactId>
             <version>4.5.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.atfangyi.tingshu</groupId>
+            <artifactId>service-album-client</artifactId>
+            <version>1.0</version>
+        </dependency>
 <!--        <dependency>-->
 <!--            <groupId>com.alibaba.cloud</groupId>-->
 <!--            <artifactId>spring-cloud-starter-alibaba-seata</artifactId>-->
