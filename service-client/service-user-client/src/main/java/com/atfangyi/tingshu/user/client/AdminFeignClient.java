@@ -2,6 +2,7 @@ package com.atfangyi.tingshu.user.client;
 
 
 import cn.hutool.core.lang.Assert;
+import com.atfangyi.tingshu.common.result.Result;
 import com.atfangyi.tingshu.model.user.AdminInfo;
 import com.atfangyi.tingshu.user.client.impl.AdminDegradeFeignClient;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -17,8 +18,8 @@ public interface AdminFeignClient {
     AdminInfo queryAdminInfoById(@PathVariable Long id);
 
 
-    @GetMapping("/getUserInfoCount")
-    Long getUserInfoCount();
+    @GetMapping("/internal/user/count")
+    Result<Long> getUserInfoCount();
 
 
 }

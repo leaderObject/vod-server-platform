@@ -27,6 +27,14 @@
           and is_deleted = 0
     </update>
 
+    <update id="updateAlbumStatByType">
+        update album_stat
+        set stat_num = stat_num + #{albumStatMqVo.count}
+        where album_id = #{albumStatMqVo.albumId}
+          and stat_type = #{albumStatMqVo.statType}
+          and is_deleted = 0
+    </update>
+
     <select id="getTrackStatVo" resultMap="AlbumStatVoMap">
         select
             max(if(stat_type='0701',stat_num,0))  playStatNum ,

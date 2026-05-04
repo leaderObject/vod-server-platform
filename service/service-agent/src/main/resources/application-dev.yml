@@ -4,10 +4,31 @@ spring:
       api-key: sk-192fce70d09b4f94bb5373c9c5287fe7
       chat:
         options:
-          model: qwen3.6-plus-2026-04-02
+          model: qwen3.6-max-preview
+  # 数据库连接（从业务库同步数据到RAG知识库）
+  datasource:
+    url: jdbc:mysql://localhost:3306/tingshu?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  # 文件上传配置
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
+
 server:
   port: 5566
+  # 禁用响应压缩，防止SSE流式输出被缓冲
+  compression:
+    enabled: false
+
+# 业务接口调用配置
+tool:
+  gateway-url: http://localhost:8500
+  ai-service-token: tingshu-ai-internal-service-token-2024
 
 logging:
   level:
-    com.atfangyi.agent.advisor.AgentLoggerAdvisor: debug
+    com.atfangyi.agent: debug

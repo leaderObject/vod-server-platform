@@ -6,6 +6,7 @@ import com.atfangyi.tingshu.album.service.TrackInfoService;
 import com.atfangyi.tingshu.common.constant.KafkaConstant;
 import com.atfangyi.tingshu.common.execption.GuiguException;
 import com.atfangyi.tingshu.common.result.ResultCodeEnum;
+import com.atfangyi.tingshu.vo.album.AlbumStatMqVo;
 import com.atfangyi.tingshu.vo.album.TrackStatMqVo;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
@@ -45,5 +46,15 @@ public class AlbumReceiver {
         if (value == null) throw new GuiguException(ResultCodeEnum.ARGUMENT_VALID_ERROR);
         albumInfoService.removeById(Long.valueOf(value ));
 
+    }
+
+    @KafkaListener(topics = KafkaConstant.QUEUE_ALBUM_STAT_UPDATE)
+    public void albumStatUpdateReceiver(ConsumerRecord<String, String> record) {
+        String value = record.value();
+        log.info("接收到专辑统计更新消息：{}", value);
+        if (value != null) {
+            AlbumStatMqVo albumStatMqVo = JSONObject.parseObject(value, AlbumStatMqVo.class);
+            albumInfoService.updateAlbumStat(albumStatMqVo);
+        }
     }
 }

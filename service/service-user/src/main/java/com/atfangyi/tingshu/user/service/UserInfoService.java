@@ -4,6 +4,9 @@ import com.atfangyi.tingshu.model.user.UserInfo;
 import com.atfangyi.tingshu.model.user.UserVipService;
 import com.atfangyi.tingshu.vo.user.UserInfoVo;
 import com.atfangyi.tingshu.vo.user.UserPaidRecordVo;
+import com.atfangyi.tingshu.vo.user.UserSubscribeVo;
+import com.atfangyi.tingshu.vo.user.UserCollectVo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Date;
@@ -36,6 +39,16 @@ public interface UserInfoService extends IService<UserInfo> {
 
     UserInfo queryUserInfoById(Long id);
 
+    IPage<UserSubscribeVo> findUserSubscribePage(Long page, Long limit);
 
+    Boolean subscribe(Long albumId);
+
+    Boolean isSubscribe(Long albumId);
+
+    IPage<UserCollectVo> findUserCollectPage(Long page, Long limit);
+
+    Boolean collect(Long trackId);
+
+    Boolean isCollect(Long trackId);
 
 }

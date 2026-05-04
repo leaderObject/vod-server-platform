@@ -2,6 +2,7 @@ package com.atfangyi.tingshu.album.mapper;
 
 import com.atfangyi.tingshu.common.constant.SystemConstant;
 import com.atfangyi.tingshu.model.album.AlbumInfo;
+import com.atfangyi.tingshu.vo.album.AlbumStatMqVo;
 import com.atfangyi.tingshu.vo.album.AlbumStatVo;
 import com.atfangyi.tingshu.vo.album.TrackStatMqVo;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
@@ -14,6 +15,8 @@ public interface AlbumInfoMapper extends BaseMapper<AlbumInfo> {
 
 
     void updateAlbumStat(@Param("trackStatMqVo") TrackStatMqVo trackStatMqVo);
+
+    void updateAlbumStatByType(@Param("albumStatMqVo") AlbumStatMqVo albumStatMqVo);
 
     AlbumStatVo getTrackStatVo(Long trackId);
 

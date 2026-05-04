@@ -19,6 +19,7 @@ import com.atfangyi.tingshu.album.AlbumFeignClient;
 import com.atfangyi.tingshu.common.ParamAssert.ServiceAssert;
 import com.atfangyi.tingshu.common.constant.RedisConstant;
 import com.atfangyi.tingshu.common.execption.GuiguException;
+import com.atfangyi.tingshu.common.result.Result;
 import com.atfangyi.tingshu.common.result.ResultCodeEnum;
 import com.atfangyi.tingshu.common.service.KafkaService;
 import com.atfangyi.tingshu.dto.SearchDto;
@@ -412,7 +413,8 @@ public class SearchServiceImpl implements SearchService {
         CompletableFuture.allOf(CompletableFuture.runAsync(() -> {
             map.put("TrackTotal", albumFeignClient.findAlbumTrackCount());
         }), CompletableFuture.runAsync(() -> {
-            map.put("userTotal", adminFeignClient.getUserInfoCount());
+            Result<Long> result = adminFeignClient.getUserInfoCount();
+            map.put("userTotal", result != null && result.getData() != null ? result.getData() : 0L);
         })).join();
 
         return map;

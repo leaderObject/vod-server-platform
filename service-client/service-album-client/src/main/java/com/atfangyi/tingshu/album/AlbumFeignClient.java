@@ -49,6 +49,9 @@ public interface AlbumFeignClient {
     @GetMapping("/trackInfo/count")
     Long findAlbumTrackCount();
 
+    @GetMapping("/trackInfo/getTrackInfo/{id}")
+    Result<TrackInfo> getTrackInfoById(@PathVariable Long id);
+
     @PostMapping("/updateAlbumInfoById")
     boolean updateAlbumInfoById(@RequestBody AlbumDto albumDto);
 

@@ -1,6 +1,7 @@
 package com.atfangyi.tingshu.user.client.impl;
 
 
+import com.atfangyi.tingshu.common.result.Result;
 import com.atfangyi.tingshu.model.user.AdminInfo;
 import com.atfangyi.tingshu.user.client.AdminFeignClient;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +22,9 @@ public class AdminDegradeFeignClient implements FallbackFactory<AdminFeignClient
             }
 
             @Override
-            public Long getUserInfoCount() {
+            public Result<Long> getUserInfoCount() {
                 log.error("getUserInfoCount降级处理 --{}", cause.getMessage());
-                return 0L;
+                return Result.ok(0L);
             }
         };
     }

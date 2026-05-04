@@ -9,6 +9,7 @@ import com.atfangyi.tingshu.query.album.AlbumInfoQuery;
 import com.atfangyi.tingshu.vo.album.AlbumInfoVo;
 import com.atfangyi.tingshu.vo.album.AlbumListVo;
 import com.atfangyi.tingshu.vo.album.AlbumStatVo;
+import com.atfangyi.tingshu.vo.album.AlbumStatMqVo;
 import com.atfangyi.tingshu.vo.album.TrackStatMqVo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -35,6 +36,8 @@ public interface AlbumInfoService extends IService<AlbumInfo> {
     AlbumStatVo getAlbumStatVo(Long albumId);
 
     void receiver(TrackStatMqVo trackStatMqVo);
+
+    void updateAlbumStat(AlbumStatMqVo albumStatMqVo);
 
     AlbumStatVo getTrackStatVo(Long trackId);
 

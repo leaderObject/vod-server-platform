@@ -62,6 +62,12 @@ public class AlbumDegradeFeignClient implements FallbackFactory<AlbumFeignClient
             }
 
             @Override
+            public Result<TrackInfo> getTrackInfoById(Long id) {
+                log.error("getTrackInfoById   异常原因{}", cause.getMessage());
+                return null;
+            }
+
+            @Override
             public boolean updateAlbumInfoById(AlbumDto albumDto) {
                 log.error("远程dto ---{}", albumDto);
                 log.error("updateAlbumInfoById   降级处理 --{}", cause.getMessage());

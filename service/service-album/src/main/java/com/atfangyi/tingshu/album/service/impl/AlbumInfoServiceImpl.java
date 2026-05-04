@@ -194,6 +194,12 @@ public class AlbumInfoServiceImpl extends ServiceImpl<AlbumInfoMapper, AlbumInfo
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void updateAlbumStat(AlbumStatMqVo albumStatMqVo) {
+        albumInfoMapper.updateAlbumStatByType(albumStatMqVo);
+    }
+
+    @Override
     public AlbumStatVo getTrackStatVo(Long trackId) {
         return albumInfoMapper.getTrackStatVo(trackId);
     }

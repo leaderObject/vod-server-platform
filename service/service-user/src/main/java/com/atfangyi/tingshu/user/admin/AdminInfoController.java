@@ -98,6 +98,15 @@ public class AdminInfoController {
         return userInfoService.count();
     }
 
+    /**
+     * 内部接口，供其他微服务调用，无需认证
+     */
+    @Operation(summary = "内部接口-获取用户总数")
+    @GetMapping("/internal/user/count")
+    public Result<Long> getUserCountInternal() {
+        return Result.ok(userInfoService.count());
+    }
+
     @GetMapping("/wechat/qrcode")
     @Operation(summary = "微信扫码登录接口")
     public Result<String> wechatQrcode() {
