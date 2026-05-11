@@ -76,6 +76,13 @@ public class TrackInfoApiController {
         return trackInfoService.count();
     }
 
+    @Operation(summary = "更新声音信息")
+    @PutMapping("/trackInfo/updateTrackInfo/{id}")
+    public Result updateTrackInfo(@PathVariable Long id, @RequestBody TrackInfoVo trackInfoVo) {
+        trackInfoVo.setId(id);
+        return trackInfoService.updateTrackInfo(trackInfoVo) ? Result.ok() : Result.fail();
+    }
+
 
 }
 

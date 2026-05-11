@@ -171,8 +171,8 @@ public class TrackInfoServiceImpl extends ServiceImpl<TrackInfoMapper, TrackInfo
             if (redisTemplate.opsForValue().setIfAbsent(trackStatMqVo.getBusinessNo(), trackStatMqVo.getTrackId(), 3L, TimeUnit.HOURS)) {
                 boolean flag = trackInfoMapper.receiver(trackStatMqVo);
 
-                if (SystemConstant.TRACK_STAT_PLAY.equals(trackStatMqVo.getTrackId())
-                        || SystemConstant.TRACK_STAT_COMMENT.equals(trackStatMqVo.getTrackId()))
+                if (SystemConstant.TRACK_STAT_PLAY.equals(trackStatMqVo.getStatType())
+                        || SystemConstant.TRACK_STAT_COMMENT.equals(trackStatMqVo.getStatType()))
                     albumInfoService.receiver(trackStatMqVo);
             }
         } catch (Exception e) {
@@ -193,6 +193,32 @@ public class TrackInfoServiceImpl extends ServiceImpl<TrackInfoMapper, TrackInfo
             throw new GuiguException(501, "该声音已经购买 暂时不能删除");
         }
         return trackInfoMapper.deleteById(id) > 0;
+    }
+
+    @Override
+    public boolean updateTrackInfo(TrackInfoVo trackInfoVo) {
+        if (trackInfoVo.getId() == null) {
+            throw new GuiguException(501, "声音ID不能为空");
+        }
+        TrackInfo existTrack = trackInfoMapper.selectById(trackInfoVo.getId());
+        if (existTrack == null) {
+            throw new GuiguException(501, "声音不存在");
+        }
+        TrackInfo trackInfo = new TrackInfo();
+        BeanUtils.copyProperties(trackInfoVo, trackInfo);
+        // 如果有新的媒体文件ID，更新媒体信息
+        if (trackInfoVo.getMediaFileId() != null && !trackInfoVo.getMediaFileId().isEmpty()) {
+            JSONObject mediaDetailInfo = vodService.getMediaDetailInfo(trackInfoVo.getMediaFileId());
+            if (mediaDetailInfo != null) {
+                JSONObject metaData = JSONObject.parseObject(mediaDetailInfo.get("metaData").toString());
+                JSONObject basicInfo = JSONObject.parseObject(mediaDetailInfo.get("basicInfo").toString());
+                trackInfo.setMediaDuration(metaData.getBigDecimal("audioDuration"));
+                trackInfo.setMediaUrl(basicInfo.getString("mediaUrl"));
+                trackInfo.setMediaType(basicInfo.getString("type"));
+                trackInfo.setMediaSize(metaData.getLong("size"));
+            }
+        }
+        return trackInfoMapper.updateById(trackInfo) > 0;
     }
 
 

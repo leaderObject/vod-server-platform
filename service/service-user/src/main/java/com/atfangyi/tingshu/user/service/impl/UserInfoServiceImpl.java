@@ -25,6 +25,7 @@ import com.atfangyi.tingshu.user.mapper.UserPaidTrackMapper;
 import com.atfangyi.tingshu.user.mapper.UserVipServiceMapper;
 import com.atfangyi.tingshu.user.service.UserInfoService;
 import com.atfangyi.tingshu.user.strategy.UserPaidStrategy;
+import com.atfangyi.tingshu.vo.album.TrackStatMqVo;
 import com.atfangyi.tingshu.vo.user.UserInfoVo;
 import com.atfangyi.tingshu.vo.user.UserPaidRecordVo;
 import com.atfangyi.tingshu.vo.user.UserSubscribeVo;
@@ -372,8 +373,15 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
         String collectionName = MongoUtil.getCollectionName(MongoUtil.MongoCollectionEnum.USER_COLLECT, userId);
         Query query = new Query(Criteria.where("userId").is(userId).and("trackId").is(trackId));
         UserCollect exist = mongoTemplate.findOne(query, UserCollect.class, collectionName);
+        TrackStatMqVo trackStatMqVo = new TrackStatMqVo();
+        trackStatMqVo.setTrackId(trackId);
+        trackStatMqVo.setStatType(SystemConstant.TRACK_STAT_COLLECT);
+        trackStatMqVo.setBusinessNo(IdUtil.fastSimpleUUID());
         if (exist != null) {
             mongoTemplate.remove(query, UserCollect.class, collectionName);
+            // 取消收藏 - 发送 -1 消息
+            trackStatMqVo.setCount(-1);
+            kafkaService.sendMessage(KafkaConstant.QUEUE_TRACK_STAT_UPDATE, JSONObject.toJSONString(trackStatMqVo));
             return false;
         } else {
             UserCollect userCollect = new UserCollect();
@@ -382,6 +390,9 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo> i
             userCollect.setTrackId(trackId);
             userCollect.setCreateTime(new Date());
             mongoTemplate.save(userCollect, collectionName);
+            // 收藏 - 发送 +1 消息
+            trackStatMqVo.setCount(1);
+            kafkaService.sendMessage(KafkaConstant.QUEUE_TRACK_STAT_UPDATE, JSONObject.toJSONString(trackStatMqVo));
             return true;
         }
     }

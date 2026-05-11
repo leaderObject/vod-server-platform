@@ -31,4 +31,6 @@ public interface TrackInfoService extends IService<TrackInfo> {
 
     boolean deleteTrackInfoById(Long id);
 
+    boolean updateTrackInfo(TrackInfoVo trackInfoVo);
+
 }

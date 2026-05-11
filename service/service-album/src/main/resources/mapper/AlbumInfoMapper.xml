@@ -37,10 +37,10 @@
 
     <select id="getTrackStatVo" resultMap="AlbumStatVoMap">
         select
-            max(if(stat_type='0701',stat_num,0))  playStatNum ,
-            max(if(stat_type='0702',stat_num,0))  subscribeStatNum ,
-            max(if(stat_type='0703',stat_num,0))   buyStatNum,
-            max(if(stat_type='0704',stat_num,0))  commentStatNum
+            max(if(stat_type='0701',stat_num,0)) playStatNum,
+            max(if(stat_type='0702',stat_num,0)) collectStatNum,
+            max(if(stat_type='0703',stat_num,0)) praiseStatNum,
+            max(if(stat_type='0704',stat_num,0)) commentStatNum
         from track_stat
         where track_id = #{trackId};
     </select>

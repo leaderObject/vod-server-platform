@@ -92,12 +92,15 @@ public class AdminInfoServiceImpl extends ServiceImpl<AdminInfoMapper, AdminInfo
     public boolean code(String phone) {
         //查询验证码发送的次数 限制每天发送三次
         JSONObject jsonObject = SendCodeTool(phone);
-        log.info("发送验证码 {}", jsonObject);
-        Assert.notNull(jsonObject);
+        log.info("发送验证码响应: {}", jsonObject);
+        if (jsonObject == null) {
+            log.error("短信发送服务异常，请检查短信API配置或网络连接");
+            throw new GuiguException(ResultCodeEnum.FAIL.getCode(), "短信发送服务暂时不可用，请稍后重试或联系管理员");
+        }
         if (jsonObject.get("code").equals("0")) {
             redisTemplate.opsForValue().set(phone + ":code", jsonObject.get("codemsg"), 3, TimeUnit.MINUTES);
         }
-        return jsonObject.get("code").equals("0") ? true : false;
+        return jsonObject.get("code").equals("0");
     }
 
     /**
@@ -173,13 +176,23 @@ public class AdminInfoServiceImpl extends ServiceImpl<AdminInfoMapper, AdminInfo
         Map<String, String> bodys = new HashMap<String, String>();
         try {
             HttpResponse httpResponse = HttpUtils.doPost(host, path, method, headers, querys, bodys);
-            System.out.println(httpResponse.toString());
+            log.info("短信发送响应状态: {}", httpResponse.getStatusLine());
             //获取response的body
-            JSONObject jsonObject = JSONObject.parseObject(EntityUtils.toString(httpResponse.getEntity()));
+            String responseStr = EntityUtils.toString(httpResponse.getEntity());
+            log.info("短信发送响应内容: {}", responseStr);
+            if (responseStr == null || responseStr.isEmpty()) {
+                log.error("短信发送失败: 响应体为空");
+                return null;
+            }
+            JSONObject jsonObject = JSONObject.parseObject(responseStr);
+            if (jsonObject == null) {
+                log.error("短信发送失败: JSON解析结果为空");
+                return null;
+            }
             jsonObject.put("codemsg", codemsg);
             return jsonObject;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("短信发送异常: {}", e.getMessage(), e);
         }
         return null;
     }

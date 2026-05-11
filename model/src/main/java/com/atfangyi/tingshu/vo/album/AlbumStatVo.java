@@ -21,4 +21,10 @@ public class AlbumStatVo {
 
 	@Schema(description = "评论数")
 	private Integer commentStatNum;
+
+	@Schema(description = "收藏量")
+	private Integer collectStatNum;
+
+	@Schema(description = "点赞量")
+	private Integer praiseStatNum;
 }
